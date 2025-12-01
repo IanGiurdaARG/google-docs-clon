@@ -1,26 +1,39 @@
-import { useEffect } from "react";
+// App.jsx
+import { useEffect, useState } from "react";
 import { getSocket } from "./websocket";
 
-function App() {
+export default function App() {
+  const [text, setText] = useState("");
+
   useEffect(() => {
-    const socket = getSocket();
+    const ws = getSocket();
 
-    socket.onopen = () => console.log("Conectado");
-    socket.onmessage = (e) => console.log("Mensaje del servidor:", e.data);
-    socket.onclose = () => console.log("Cerrado");
+    ws.onopen = () => console.log("Conectado");
+    ws.onmessage = (e) => {
+      console.log("Mensaje del servidor:", e.data);
+      setText(e.data);
+    };
+    ws.onclose = () => console.log("Cerrado");
 
-    return () => {};
+    return () => {
+      // no cerramos el socket, lo mantiene la instancia singleton
+    };
   }, []);
 
- return (
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setText(value);
+    getSocket().send(value);
+  };
+
+  return (
     <div style={{ padding: "1rem" }}>
-      <h1>Editor sincronizado (MVP)</h1>
+      <h1>Editor sincronizado</h1>
       <textarea
+        value={text}
+        onChange={handleChange}
         style={{ width: "100%", height: "300px" }}
-        placeholder="Empieza a escribir..."
       />
     </div>
   );
 }
-
-export default App;
