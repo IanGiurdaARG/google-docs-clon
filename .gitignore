@@ -1,0 +1,9 @@
+# Node modules y dependencias de frontend
+mi-app/node_modules/
+
+# Entorno virtual de Python
+backend/venv/
+
+# Archivos temporales de Python
+*.pyc
+__pycache__/
